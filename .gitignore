@@ -130,6 +130,8 @@ Control.system-ca-bundle
 GitHub.sublime-settings 
 
 # Visual Studio Code # 
+.idea
+.vscode
 .vscode/* 
 !.vscode/settings.json 
 !.vscode/tasks.json 

@@ -44,7 +44,25 @@ def cart_add(req):
     return JsonResponse(response_data)
 
 def cart_change(req):
-    ...
+    cart_id = req.POST.get('cart_id')
+    quantity = req.POST.get('quantity')
+    cart = Cart.objects.get(id=cart_id)
+
+    cart.quantity = quantity
+    cart.save()
+
+    user_cart = get_user_carts(req)
+        
+    cart_items_html = render_to_string(
+        'carts/includes/included_cart.html', {'carts': user_cart}, request=req
+    )
+
+    response_data = {
+        'message': 'Количества товара изменена',
+        'cart_items_html': cart_items_html
+    }
+    
+    return JsonResponse(response_data)
 
 def cart_remove(req):
     cart_id = req.POST.get('cart_id')

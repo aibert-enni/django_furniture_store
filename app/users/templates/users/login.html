@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 {% load static %}
+{% load carts_tags %}
+
+{% block modal_cart %}
+    {% include "includes/cart_button.html" %}
+{% endblock  %}
 
 {% block content %}
     <div class="row">
@@ -9,7 +14,9 @@
                     <h2 class="text-center mb-4">Авторизация</h2>
                     <form action="{% url "user:login" %}" method="post">
                         {% csrf_token %}
-                        
+                        {% if request.GET.next %}
+                            <input type="hidden" name="next" value="{{request.GET.next}}">
+                        {% endif %}
                         <div class="mb-3">
                             <label for="id_username" class="form-label">Имя пользователя</label>
                             <input type="text" class="form-control" name="username" id="id_username" value="{% if form.username.value %}{{form.username.value}}{% endif %}" placeholder="Введите ваше имя пользователя" required>

@@ -1,4 +1,11 @@
-{% extends "base.html" %} {% load static %} {% block content %}
+{% extends "base.html" %} 
+{% load static %} 
+
+{% block modal_cart %}
+    {% include "includes/cart_button.html" %}
+{% endblock  %}
+
+{% block content %}
 <div class="container mt-5">
   <div class="card mb-4 custom-shadow">
     <div class="row">
@@ -35,7 +42,7 @@
             </div>
             <div class="modal-body">
               <img
-                src="../deps/images/goods/set of tea table and three chairs.jpg"
+                src="{{product.image.url}}"
                 class="img-fluid"
                 alt="Изображение 1"
               />
@@ -49,7 +56,7 @@
       <p class="card-text">Цена: <strong>{{product.discount_price}}</strong></p>
       <h5 class="card-title">{{product.name}}</h5>
       <p class="card-text">{{product.description}}</p>
-      <a href="#" class="btn btn-dark add-to-cart">Добавить в корзину</a>
+      <a href="{% url "cart:cart_add" product.slug%}" class="btn btn-dark add-to-cart">Добавить в корзину</a>
     </div>
   </div>
 </div>

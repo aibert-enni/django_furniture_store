@@ -1,12 +1,15 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
+from django.template.loader import render_to_string
 
+from carts.utils import get_user_carts
 from carts.models import Cart
-from users.models import User
 from goods.models import Products
 
-def cart_add(req, product_slug):
-    product = Products.objects.get(slug=product_slug)
+def cart_add(req):
+    
+    product_id = req.POST.get('product_id')
+    product = Products.objects.get(id=product_id)
 
     if req.user.is_authenticated:
         carts = Cart.objects.filter(user=req.user, product=product)
@@ -26,11 +29,25 @@ def cart_add(req, product_slug):
     #             cart.save()
     #     else:
     #         Cart( product=product, quantity=1, session_key = req.session.session.key).save()
+
+    user_cart = get_user_carts(req)
         
+    cart_items_html = render_to_string(
+        'carts/includes/included_cart.html', {'carts': user_cart}, request=req
+    )
+
+    response_data = {
+        'message': 'Товар добавлен в корзину',
+        'data': cart_items_html
+    }
+
+    return JsonResponse(response_data)
+
+def cart_change(req):
+    ...
+
+def cart_remove(req, cart_id):
+    cart = Cart.objects.get(id=cart_id)
+    cart.delete()
+    
     return redirect(req.META['HTTP_REFERER'])
-
-def cart_change(req, product_slug):
-    ...
-
-def cart_remove(req, product_slug):
-    ...

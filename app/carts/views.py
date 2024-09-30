@@ -38,7 +38,7 @@ def cart_add(req):
 
     response_data = {
         'message': 'Товар добавлен в корзину',
-        'data': cart_items_html
+        'cart_items_html': cart_items_html
     }
 
     return JsonResponse(response_data)
@@ -46,8 +46,22 @@ def cart_add(req):
 def cart_change(req):
     ...
 
-def cart_remove(req, cart_id):
+def cart_remove(req):
+    cart_id = req.POST.get('cart_id')
     cart = Cart.objects.get(id=cart_id)
+    quantity = cart.quantity
     cart.delete()
+
+    user_cart = get_user_carts(req)
+        
+    cart_items_html = render_to_string(
+        'carts/includes/included_cart.html', {'carts': user_cart}, request=req
+    )
+
+    response_data = {
+        'message': 'Товар удален из корзины',
+        'cart_items_html': cart_items_html,
+        'quantity_deleted': quantity
+    }
     
-    return redirect(req.META['HTTP_REFERER'])
+    return JsonResponse(response_data)

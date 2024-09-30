@@ -20,15 +20,15 @@ def cart_add(req):
                 cart.save()
         else:
             Cart(user=req.user, product=product, quantity=1).save()
-    # else:
-    #     carts = Cart.objects.filter(session_key=req.session.session_key, product=product)
-    #     if cart.exists():
-    #         cart = carts.first()
-    #         if cart:
-    #             cart.quantity += 1
-    #             cart.save()
-    #     else:
-    #         Cart( product=product, quantity=1, session_key = req.session.session.key).save()
+    else:
+        carts = Cart.objects.filter(session_key=req.session.session_key, product=product)
+        if carts.exists():
+            cart = carts.first()
+            if cart:
+                cart.quantity += 1
+                cart.save()
+        else:
+            Cart( product=product, quantity=1, session_key=req.session.session_key).save()
 
     user_cart = get_user_carts(req)
         

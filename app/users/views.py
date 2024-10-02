@@ -3,7 +3,9 @@ from django.contrib import auth, messages
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.db.models import Prefetch
 
+from orders.models import Order, OrderItem
 from carts.utils import delete_carts_duplicates
 from carts.models import Cart
 from users.forms import UserLoginForm, UserProfileForm, UserRegistrationForm
@@ -79,10 +81,21 @@ def profile(req):
             return HttpResponseRedirect(reverse('user:profile'))
     else:
         form = UserRegistrationForm(instance=req.user)
+
+    orders = (
+        Order.objects.filter(user=req.user).prefetch_related(
+            Prefetch(
+                'orderitem_set',
+                queryset = OrderItem.objects.select_related('product'),
+            )
+        )
+        .order_by('-created_timestamp')
+    )
         
     context = {
         'title': 'Home - Кабинет',
-        'form': form
+        'form': form,
+        'orders': orders
     }
     return render(req, 'users/profile.html', context)
 

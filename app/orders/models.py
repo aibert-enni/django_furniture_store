@@ -44,6 +44,7 @@ class OrderItem(models.Model):
         db_table = 'order_item'
         verbose_name = 'Проданный товар'
         verbose_name_plural = 'Проданные товары'
+        ordering = ("id",)
 
     objects = OrderItemQueryset.as_manager()
 

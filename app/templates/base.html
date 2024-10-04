@@ -67,7 +67,12 @@
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
-                                <li><a class="dropdown-item  text-white" href="{% url "user:logout" %}">Выйти</a></li>
+                                <li>
+                                    <form action="{% url "users:logout" %}" method="post">
+                                        {% csrf_token %}
+                                        <input type='submit' value="Выйти" class="dropdown-item  text-white" />
+                                    </form>
+                                </li>
                             </ul>
                         </li>
                         {% endif %}

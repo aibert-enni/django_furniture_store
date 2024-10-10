@@ -1,4 +1,7 @@
-{% extends "base.html" %} {% load static %} 
+{% extends "base.html" %} 
+{% load static %} 
+{% load cache %}
+
 {% block css %} 
 <link rel="stylesheet" href="{% static "deps/css/my_footer_css.css" %}"> 
 {% endblock %} 
@@ -8,9 +11,14 @@
 {% endblock  %}
 
 {% block content %}
-<h1 class="mt-5 pt-5"><strong>{{content}}</strong></h1>
+
+{% cache 3600 index_content %}
+  <h1 class="mt-5 pt-5"><strong>{{content}}</strong></h1>
+{% endcache %}
 {% endblock %} 
+
 {% block footer %}
+{% cache 3600 footer_content %}
 <footer class="py-4 bg-dark">
   <div class="container">
     <p class="m-0 text-center text-white">
@@ -18,4 +26,5 @@
     </p>
   </div>
 </footer>
+{% endcache %}
 {% endblock %}

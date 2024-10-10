@@ -1,5 +1,7 @@
 {% extends "base.html" %} 
 {% load static %} 
+{% load cache %}
+
 {% block css %} 
 <link rel="stylesheet" href="{% static "deps/css/my_footer_css.css" %}"> 
 {% endblock %} 
@@ -8,13 +10,17 @@
     {% include "includes/cart_button.html" %}
 {% endblock  %}
 
-{% block content %}
-<div class="mt-5 pt-5 bg-white custom-shadow rounded">
-  <h2 class="m-2"><strong>{{content}}</strong></h2>
-  <p class="m-2">{{text_on_page}}</p>
-</div>
-{% endblock %}
+  {% block content %}
+  {% cache 3600 about_content %}
+  <div class="mt-5 pt-5 bg-white custom-shadow rounded">
+    <h2 class="m-2"><strong>{{content}}</strong></h2>
+    <p class="m-2">{{text_on_page}}</p>
+  </div>
+  {% endcache %}
+  {% endblock %}
+
 {% block footer %}
+{% cache 3600 footer_content %}
 <footer class="py-4 bg-dark">
   <div class="container">
     <p class="m-0 text-center text-white">
@@ -22,4 +28,5 @@
     </p>
   </div>
 </footer>
+{% endcache %}
 {% endblock %}

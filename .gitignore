@@ -8,6 +8,7 @@ media
 app/fixtures
 app/media
 app/db.sqlite3
+app/cache/*
 
 # Backup files # 
 *.bak 

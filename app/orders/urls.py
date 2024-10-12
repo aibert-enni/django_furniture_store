@@ -4,4 +4,5 @@ from orders import views
 app_name = 'orders'
 urlpatterns = [
     path('create_order/', views.CreateOrderView.as_view(), name='create_order'),
+    path('success/', views.SuccessView.as_view(), name='success'),
 ]

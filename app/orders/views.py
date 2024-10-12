@@ -1,7 +1,11 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import FormView
 
+from orders.services import PaymentProcessorFactory, StripePaymentProcessor, YOOKASSAPaymentProcessor
+from orders.models import Order
 from orders.utils import create_order
 from orders.forms import CreateOrderForm
 
@@ -24,6 +28,27 @@ class CreateOrderView(LoginRequiredMixin, FormView):
         context['title'] = 'Home - Оформление заказа'
         context['order'] = True
         return context
+
+class SuccessView(LoginRequiredMixin, View):
+    def get(self, request):
+        order_id = request.GET.get('order_id')
+        paymentService = request.GET.get('service')
+        if order_id:
+            processor = PaymentProcessorFactory.get_processor(paymentService)
+            
+            paymentState = processor.handle_session(request)
+            
+            order = Order.objects.get(id=order_id)
+
+            if paymentState:
+                order.is_paid = True
+                order.status = 'Оплачено'
+                order.save()
+            else:
+                order.status = 'Неоплачено'
+                order.save()
+            
+        return redirect('user:profile')
         
 
 # @login_required
